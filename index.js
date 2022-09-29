@@ -26,56 +26,55 @@ let updateTestData = [
 	[90,100]
 ];
 
-// Create Random Points
-// Using function f(x) = a * x + b
-
-const numPoints = 500;
-const data = [];
-for (let i = 0; i < numPoints; i++) {
-	let aCoef = -0.5;
-	let bCoef = 200;
-	let xValue = i;
-	let yValue = xValue * aCoef + bCoef;
-  data.push([xValue, yMax - margin - yValue]);
-}
-
 // Append SVG Object to the Page
 d3.select("#graph-chart")
-  .append("svg")
-  .attr("style", "width:" + xSize + ";height:" + ySize)
-  .append("g")
-  .attr("transform","translate(" + margin + "," + margin + ")");
+.append("svg")
+.attr("style", "width:" + xSize + "px;height:" + ySize + "px")
+.append("g")
+.attr("transform","translate(" + margin + "," + margin + ")");
 
 // Store SVG selection to variable for convenient use
 const svg = d3.select("#graph-chart")
-  .select("svg")
-  .select("g");
-  
-  //test data
-  /*svg.selectAll("text")
-  .data(["vienas","du"])
-  .enter()
-  .append("text")
-  .attr("x", (d,i)=>{return i*60;})
-  .attr("y", (d,i)=>{return i*1.5 + "em";})
-  .text(function(d){return d;});*/
+.select("svg")
+.select("g");
+
+//test data
+/*svg.selectAll("text")
+.data(["vienas","du"])
+.enter()
+.append("text")
+.attr("x", (d,i)=>{return i*60;})
+.attr("y", (d,i)=>{return i*1.5 + "em";})
+.text(function(d){return d;});*/
 
 // X Axis
-const x = d3.scaleLinear()
-  .domain([0, 500])
-  .range([0, xMax]);
+const xAxis = d3.scaleLinear()
+.domain([0, 500])
+.range([0, xMax]);
 
 svg.append("g")
-  .attr("transform", "translate(0," + yMax + ")")
-  .call(d3.axisBottom(x));
+.attr("transform", "translate(0," + yMax + ")")
+.call(d3.axisBottom(xAxis));
 
 // Y Axis
-const y = d3.scaleLinear()
+const yAxis = d3.scaleLinear()
   .domain([0, 500])
   .range([ yMax, 0]);
 
 svg.append("g")
-  .call(d3.axisLeft(y));
+  .call(d3.axisLeft(yAxis));
+  
+  // Create Random Points
+  // Using function f(x) = a * x + b
+  const numPoints = 500 - margin;
+  const data = [];
+  for (let i = margin; i < numPoints; i=i+10) {
+	  let aCoef = 1;
+	  let bCoef = margin;
+	  let xValue = i;
+	  let yValue = xValue * aCoef + randomInteger(bCoef);
+	data.push([xAxis(xValue), yAxis(yValue)]);
+  }
 
 // Data dots
 svg.selectAll("circle")
