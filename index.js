@@ -16,7 +16,7 @@ let data = [];
 let dataMinX;
 let dataMaxX;
 let dataMinY;
-let DataMaxY;
+let dataMaxY;
 // DEBUG DATA VARIABLES
 
 let initialTestData = [
@@ -73,10 +73,28 @@ const yAxis = d3.scaleLinear()
 svg.append("g")
   .call(d3.axisLeft(yAxis));
 
-  function clearData(){
-	  // Clear data array
-	  data = [];
-  };
+// Variable for drawing a line
+const line = d3.line().context(null);
+
+function clearData(){
+	// Clear data array
+	data = [];
+	//note: not clearing line coordinates as initial values are always set in generateData function call
+
+};
+
+
+function drawLine(){
+	console.log("drawLine function called")
+	let lineData = [ [xAxis(dataMinX), yAxis(dataMinY)], [xAxis(dataMaxX), yAxis(dataMaxY)] ];
+
+	d3.select("#graph-chart").select("g")
+		.append("path")
+		.attr("id", "initial-line")
+		.attr("d", line(lineData))
+		.attr("stroke", "black");
+
+};
   
   // Create Random Points
   // Using function f(x) = a * x + b
@@ -88,7 +106,7 @@ function generateData(){
   dataMinX = margin;
   dataMinY = dataMinX * aCoef + randomInteger(bCoef);
   dataMaxX = dataMinX;
-  DataMaxY = dataMinY;
+  dataMaxY = dataMinY;
 
   // Generate data set
   for (let i = margin; i < numPoints; i=i+10) {
@@ -99,12 +117,16 @@ function generateData(){
 	// set max X and Y values for line draw
 	if(xValue > dataMaxX){
 		dataMaxX = xValue;
-		DataMaxY = yValue;
+		dataMaxY = yValue;
 	};
   };
 };
 
 generateData();
+
+function removeInitialLine(){
+	d3.select("#initial-line").remove();
+};
 
 // Data dots
 svg.selectAll("circle")
@@ -143,11 +165,11 @@ document.getElementById("button-container").appendChild(btn_test).setAttribute("
 
 //STEP button event function
 function buttonStep(){
-	
+	removeInitialLine();
 };
 //STOP button event function
 function buttonStop(){
-	
+	drawLine();
 };
 //GENERATE button event function
 function buttonGenerate(){
@@ -161,6 +183,8 @@ function buttonGenerate(){
 	};
 	*/
 	generateData()
+
+	//console.log("min and max: " + dataMinX + " " + dataMinY + " " + dataMaxX + " " + dataMaxY)
 
 	// Join new data with existing data
 	var dataUpdate = svg.selectAll("circle")
