@@ -8,6 +8,15 @@ const margin = 40;
 const xMax = xSize - margin*2;
 const yMax = ySize - margin*2;
 
+// Function coeficients and data array
+let aCoef = 1;
+let bCoef = margin;
+let data = [];
+// Min and Max X values for drawing a line between them
+let dataMinX;
+let dataMaxX;
+let dataMinY;
+let DataMaxY;
 // DEBUG DATA VARIABLES
 
 let initialTestData = [
@@ -63,18 +72,39 @@ const yAxis = d3.scaleLinear()
 
 svg.append("g")
   .call(d3.axisLeft(yAxis));
+
+  function clearData(){
+	  // Clear data array
+	  data = [];
+  };
   
   // Create Random Points
   // Using function f(x) = a * x + b
-  const numPoints = 500 - margin;
-  const data = [];
+function generateData(){ 
+  let numPoints = 500 - margin;
+
+  clearData();
+  // Adding initial min and max values for line to draw
+  dataMinX = margin;
+  dataMinY = dataMinX * aCoef + randomInteger(bCoef);
+  dataMaxX = dataMinX;
+  DataMaxY = dataMinY;
+
+  // Generate data set
   for (let i = margin; i < numPoints; i=i+10) {
-	  let aCoef = 1;
-	  let bCoef = margin;
-	  let xValue = i;
-	  let yValue = xValue * aCoef + randomInteger(bCoef);
+	let xValue = i;
+	let yValue = xValue * aCoef + randomInteger(bCoef);
+	if(yValue >= 500){continue;};
 	data.push([xAxis(xValue), yAxis(yValue)]);
-  }
+	// set max X and Y values for line draw
+	if(xValue > dataMaxX){
+		dataMaxX = xValue;
+		DataMaxY = yValue;
+	};
+  };
+};
+
+generateData();
 
 // Data dots
 svg.selectAll("circle")
@@ -123,15 +153,18 @@ function buttonStop(){
 function buttonGenerate(){
 	
 	// Generate new data points
-	const numPoints = 50;
-	const newData = [];
+	/*
+	let numPoints = 50;
+	let newData = [];
 	for (let i = 0; i < numPoints; i++) {
 	  newData.push([parseInt(Math.random() * xMax), parseInt(Math.random() * yMax)]);
 	};
-	
+	*/
+	generateData()
+
 	// Join new data with existing data
 	var dataUpdate = svg.selectAll("circle")
-		.data(newData, d => d)
+		.data(data, d => d)
 		.join(
 			enter => {
 				// Tasks for every new element
@@ -152,24 +185,6 @@ function buttonGenerate(){
 			}
 		);
 };
-
-//generate data for machine learning
-function generateData(){
-	console.log("Generating data");
-	let newDataSet = [];
-	let bias = 100;
-	let koef = 10;
-	let initialX = 1;
-	let xStepSize = 1.5;
-	
-	for(let i = 0; i < 20; i++){
-		let singleTuple = []
-		newDataSet.push([i, koef * (initialX + xStepSize * i) + randomInteger(bias)]);
-	};
-	console.log(newDataSet);
-};
-
-//generateData();//generate new data
 
 function randomInteger(maxSize){
 	return Math.floor( Math.random() * maxSize );
