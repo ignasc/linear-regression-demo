@@ -1,6 +1,7 @@
 // Reference: https://observablehq.com/@d3/selection-join
 
-//----------------CHART TEST
+//IMPORTANT NOTE: put all graph manipulation within function call after event "page loaded" has triggered
+
 // Set Dimensions
 const xSize = 500;
 const ySize = 500;
@@ -17,23 +18,6 @@ let dataMinX;
 let dataMaxX;
 let dataMinY;
 let dataMaxY;
-// DEBUG DATA VARIABLES
-
-let initialTestData = [
-	[10,20],
-	[30,40],
-	[50,60],
-	[70,80],
-	[90,100],
-	[100,110]
-];
-let updateTestData = [
-	[20,20],
-	[60,40],
-	[100,60],
-	[70,80],
-	[90,100]
-];
 
 // Append SVG Object to the Page
 d3.select("#graph-chart")
@@ -46,15 +30,6 @@ d3.select("#graph-chart")
 const svg = d3.select("#graph-chart")
 .select("svg")
 .select("g");
-
-//test data
-/*svg.selectAll("text")
-.data(["vienas","du"])
-.enter()
-.append("text")
-.attr("x", (d,i)=>{return i*60;})
-.attr("y", (d,i)=>{return i*1.5 + "em";})
-.text(function(d){return d;});*/
 
 // X Axis
 const xAxis = d3.scaleLinear()
@@ -79,40 +54,42 @@ const line = d3.line().context(null);
 function clearData(){
 	// Clear data array
 	data = [];
-	//note: not clearing line coordinates as initial values are always set in generateData function call
-
+	//note: not clearing line coordinates as initial values are always set/reset in generateData function call
 };
-
 
 function drawLine(){
 	console.log("drawLine function called")
+	
 	let lineData = [ [xAxis(dataMinX), yAxis(dataMinY)], [xAxis(dataMaxX), yAxis(dataMaxY)] ];
+	let initialLineID = "initial-line"
+
+	//clear existing line of exists
+	deleteLine(initialLineID);
 
 	d3.select("#graph-chart").select("g")
 		.append("path")
-		.attr("id", "initial-line")
+		.attr("id", initialLineID)
 		.attr("d", line(lineData))
 		.attr("stroke", "black");
-
 };
   
   // Create Random Points
-  // Using function f(x) = a * x + b
+  // Using function f(x) = aCoef * x + random(between 0 and bCoef)
 function generateData(){ 
-  let numPoints = 500 - margin;
+  let numPoints = 500; // Number of data points
 
   clearData();
-  // Adding initial min and max values for line to draw
+  // Adding initial min and max values for line coordinates
   dataMinX = margin;
   dataMinY = dataMinX * aCoef + randomInteger(bCoef);
   dataMaxX = dataMinX;
   dataMaxY = dataMinY;
 
   // Generate data set
-  for (let i = margin; i < numPoints; i=i+10) {
+  for (let i = 0; i < numPoints; i=i+10) {
 	let xValue = i;
 	let yValue = xValue * aCoef + randomInteger(bCoef);
-	if(yValue >= 500){continue;};
+	if(yValue >= 500 || yValue < 0){continue;};
 	data.push([xAxis(xValue), yAxis(yValue)]);
 	// set max X and Y values for line draw
 	if(xValue > dataMaxX){
@@ -124,8 +101,8 @@ function generateData(){
 
 generateData();
 
-function removeInitialLine(){
-	d3.select("#initial-line").remove();
+function removeInitialLine(id){
+	d3.select("#" + id).remove();
 };
 
 // Data dots
@@ -137,35 +114,11 @@ svg.selectAll("circle")
   .attr("r", 2)
   .attr("class", "data-point")
   .style("fill", "Black");
-	
-  
-//----------------CHART TEST END
-
-
-//Create buttons
-const btn_generate_data = document.createElement("button");
-btn_generate_data.innerHTML = "Generate Data";
-btn_generate_data.type = "button";
-document.getElementById("button-container").appendChild(btn_generate_data).setAttribute("id", "btn-generate");
-
-const btn_stop = document.createElement("button");
-btn_stop.innerHTML = "Stop";
-btn_stop.type = "button";
-document.getElementById("button-container").appendChild(btn_stop).setAttribute("id", "btn-stop");
-
-const btn_step = document.createElement("button");
-btn_step.innerHTML = "Step";
-btn_step.type = "button";
-document.getElementById("button-container").appendChild(btn_step).setAttribute("id", "btn-step");
-
-const btn_test = document.createElement("button");
-btn_test.innerHTML = "Test button";
-btn_test.type = "button";
-document.getElementById("button-container").appendChild(btn_test).setAttribute("id", "btn-test");
 
 //STEP button event function
-function buttonStep(){
-	removeInitialLine();
+function deleteLine(id){
+	//removeInitialLine(id);
+	d3.select("#" + id).remove();
 };
 //STOP button event function
 function buttonStop(){
@@ -173,15 +126,7 @@ function buttonStop(){
 };
 //GENERATE button event function
 function buttonGenerate(){
-	
-	// Generate new data points
-	/*
-	let numPoints = 50;
-	let newData = [];
-	for (let i = 0; i < numPoints; i++) {
-	  newData.push([parseInt(Math.random() * xMax), parseInt(Math.random() * yMax)]);
-	};
-	*/
+
 	generateData()
 
 	//console.log("min and max: " + dataMinX + " " + dataMinY + " " + dataMaxX + " " + dataMaxY)
@@ -210,16 +155,79 @@ function buttonGenerate(){
 		);
 };
 
+function buttonTest(){
+
+};
+
 function randomInteger(maxSize){
 	return Math.floor( Math.random() * maxSize );
 };
+const coefAelement = document.getElementById("a-coef");
+const coefBelement = document.getElementById("b-coef");
+
+function updateDataDisplay(){
+	coefAelement.innerHTML = "A coeficient = " + (aCoef + parseInt(sliderBigB.value));
+	coefBelement.innerHTML = "B coeficient = " + (bCoef + parseInt(sliderBigA.value));
+};
+
+//Create buttons
+const btn_generate_data = document.createElement("button");
+btn_generate_data.innerHTML = "Generate Data";
+btn_generate_data.type = "button";
+document.getElementById("button-container").appendChild(btn_generate_data).setAttribute("id", "btn-generate");
+
+const btn_draw_line = document.createElement("button");
+btn_draw_line.innerHTML = "Draw Line";
+btn_draw_line.type = "button";
+document.getElementById("button-container").appendChild(btn_draw_line).setAttribute("id", "btn-stop");
+
+const btn_delete_line = document.createElement("button");
+btn_delete_line.innerHTML = "Delete Line";
+btn_delete_line.type = "button";
+document.getElementById("button-container").appendChild(btn_delete_line).setAttribute("id", "btn-step");
+
+const btn_test = document.createElement("button");
+btn_test.innerHTML = "Test button";
+btn_test.type = "button";
+document.getElementById("button-container").appendChild(btn_test).setAttribute("id", "btn-test");
+
+// Create inputs for user interaction
+// Slider for A coeficient (big increments)
+const inputSliderA_big = document.createElement("input");
+inputSliderA_big.type = "range";
+document.getElementById("user-inputs").appendChild(inputSliderA_big).setAttribute("id", "input-A-slider-big");
+const sliderBigA = document.getElementById("input-A-slider-big");
+sliderBigA.setAttribute("min", -100);
+sliderBigA.setAttribute("max", 100);
+sliderBigA.setAttribute("value", 0);
+
+// Slider for B coeficient (big increments)
+const inputSliderB_big = document.createElement("input");
+inputSliderB_big.type = "range";
+document.getElementById("user-inputs").appendChild(inputSliderB_big).setAttribute("id", "input-B-slider-big");
+const sliderBigB = document.getElementById("input-B-slider-big");
+sliderBigA.setAttribute("min", -100);
+sliderBigA.setAttribute("max", 100);
+sliderBigA.setAttribute("value", 0);
 
 btn_generate_data.addEventListener("click", function(){
 	buttonGenerate();
 });
-btn_stop.addEventListener("click", function(){
+btn_draw_line.addEventListener("click", function(){
 	buttonStop();
 });
-btn_step.addEventListener("click", function(){
-	buttonStep();
+btn_delete_line.addEventListener("click", function(){
+	deleteLine("initial-line");
 });
+btn_test.addEventListener("click", function(){
+	updateDataDisplay();
+});
+//---------------------------------------------
+sliderBigA.addEventListener("input", function(){
+	updateDataDisplay();
+});
+sliderBigB.addEventListener("input", function(){
+	updateDataDisplay();
+});
+
+updateDataDisplay();
