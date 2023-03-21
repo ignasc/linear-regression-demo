@@ -9,7 +9,7 @@ This is a basic linear regression algorithm demo written in javascript. It is st
 - Can generate new data points.
 
 ## Future plans
-- Automatically reset finetune slider back to middle to you are not limited to min/max values when using that slider.
+- Automatically reset finetune slider back to middle so that you are not limited to min/max values when using that slider.
 - Reset user line/sliders when generating new data.
 - More user-friendly interface to use.
 - Might add additional functionalities and expand on what is already built.
