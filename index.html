@@ -14,10 +14,29 @@
   <body onload="main()">
 	
 	<!--<svg id="graph-chart" style="width:500px;height:500px"></svg>-->
-	<div id="button-container"></div>
+	<div id="button-container">
+		<button id="btn-testas0" type="button" onclick="buttonGenerate()">Generate Data</button>
+		
+		<button id="btn-testas1" type="button" onclick="drawLineButton('initial-line')">Draw Comp Line</button>
+		<button id="btn-testas2" type="button" onclick="deleteLine('initial-line')">Delete Line</button>
+		
+		<button id="btn-testas1" type="button" onclick="drawLineButton('user-line')">Draw User Line</button>
+		<button id="btn-testas2" type="button" onclick="deleteLine('user-line')">Delete Line</button>
+		
+		<button id="btn-testas3" type="button" onclick="DEBUGcomputeThetas()">Test Button</button>
+	</div>
 	<div id="user-inputs">
+		<input id="input-A-slider-big" class="slider" type="range" min="-5000" max="5000" value="0" step="1" oninput="updateDataDisplay()">A koef - big inc</input>
+		<br>
+		<input id="input-A-slider-small" class="slider" type="range" min="-1000" max="1000" value="0" step="1" oninput="updateDataDisplay()" onmouseup="resetSliders()">A koef - small inc</input>
 		<p id="a-coef"></p>
+		
+		<input id="input-B-slider-big" class="slider" type="range" min="-100" max="100" value="0" step="1" oninput="updateDataDisplay()">B koef - big inc</input>
+		<br>
+		<input id="input-B-slider-small" class="slider" type="range" min="-1000" max="1000" value="0" oninput="updateDataDisplay()" onmouseup="resetSliders()">B koef - small inc</input>
 		<p id="b-coef"></p>
+		<p id="user-cost">User cost:</p>
+		<p id="computed-cost">Computed cost:</p>
 	</div>
 	
 	<div id="graph-chart"></div>
@@ -28,6 +47,8 @@
 	
 	<script src="./dataset.js"></script>
 	<script src="./index.js"></script>
+	<script src="./linearRegression.js"></script>
+	<script src="./dataGenerator.js"></script>
 
 	</body>
 </html>
