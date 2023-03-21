@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	
-    <title>Data</title>
+    <title>Linear regression DEMO</title>
 	
 	<link rel="stylesheet" href="./css/reset.css">
 	<link rel="stylesheet" href="./css/mainStyle.css">
@@ -17,24 +17,32 @@
 	<div id="button-container">
 		<button id="btn-testas0" type="button" onclick="buttonGenerate()">Generate Data</button>
 		
-		<button id="btn-testas1" type="button" onclick="drawLineButton('initial-line')">Draw Comp Line</button>
-		<button id="btn-testas2" type="button" onclick="deleteLine('initial-line')">Delete Line</button>
+		<br><br>
+		
+		<button id="btn-testas3" type="button" onclick="DEBUGcomputeThetas()">Run Linear Regression</button>
+		<button id="btn-testas1" type="button" onclick="drawLineButton('initial-line')">Draw Computed Line</button>
+		<button id="btn-testas2" type="button" onclick="deleteLine('initial-line')">Delete Computed Line</button>
+		
+		<br><br>
 		
 		<button id="btn-testas1" type="button" onclick="drawLineButton('user-line')">Draw User Line</button>
-		<button id="btn-testas2" type="button" onclick="deleteLine('user-line')">Delete Line</button>
+		<button id="btn-testas2" type="button" onclick="deleteLine('user-line')">Delete User Line</button>
 		
-		<button id="btn-testas3" type="button" onclick="DEBUGcomputeThetas()">Test Button</button>
 	</div>
 	<div id="user-inputs">
-		<input id="input-A-slider-big" class="slider" type="range" min="-5000" max="5000" value="0" step="1" oninput="updateDataDisplay()">A koef - big inc</input>
+		<br><br>
+		<p>Formula: y(x)=A*x+B</p>
+		<br><br>
+		<input id="input-A-slider-big" class="slider" type="range" min="-5000" max="5000" value="0" step="1" oninput="updateDataDisplay()">A koef - big increment</input>
 		<br>
-		<input id="input-A-slider-small" class="slider" type="range" min="-1000" max="1000" value="0" step="1" oninput="updateDataDisplay()" onmouseup="resetSliders()">A koef - small inc</input>
+		<input id="input-A-slider-small" class="slider" type="range" min="-1000" max="1000" value="0" step="1" oninput="updateDataDisplay()" onmouseup="resetSliders()">A koef - small increment</input>
 		<p id="a-coef"></p>
-		
-		<input id="input-B-slider-big" class="slider" type="range" min="-100" max="100" value="0" step="1" oninput="updateDataDisplay()">B koef - big inc</input>
+		<br><br>
+		<input id="input-B-slider-big" class="slider" type="range" min="-100" max="100" value="0" step="1" oninput="updateDataDisplay()">B koef - big increment</input>
 		<br>
-		<input id="input-B-slider-small" class="slider" type="range" min="-1000" max="1000" value="0" oninput="updateDataDisplay()" onmouseup="resetSliders()">B koef - small inc</input>
+		<input id="input-B-slider-small" class="slider" type="range" min="-1000" max="1000" value="0" oninput="updateDataDisplay()" onmouseup="resetSliders()">B koef - small increment</input>
 		<p id="b-coef"></p>
+		<br><br>
 		<p id="user-cost">User cost:</p>
 		<p id="computed-cost">Computed cost:</p>
 	</div>
